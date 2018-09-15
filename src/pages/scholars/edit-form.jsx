@@ -55,11 +55,8 @@ export default function EditForm({ scholar, onAction }) {
 
 	return (
 			<>
-				<h1>Editando { scholar.name }</h1>
-				<button onClick={() => { onAction({ type: 'student:edit', payload: newScholar })}}>Actualizar</button>
-
 				<div>
-					<h1>Nuevo Becado</h1>
+					<h1>Editando a { scholar.name }</h1>
 					<form onSubmit={handleSubmit}>
 						<p>
 							<label>Nombre: </label>

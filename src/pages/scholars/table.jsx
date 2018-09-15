@@ -1,84 +1,5 @@
 import { useState } from 'react'
 
-const ModalEndOfDay = ({ currentScholarMark={}, onAction }) => {
-
-	console.group(`ModalEndOfDay - render`)
-	
-	console.log(currentScholarMark)
-	const history = [{slp: 10, 'end_day': true}, {slp: 20}, {slp:30, 'end_day': true}]//currentScholarMark.history || []
-	let lastHistoryEndOfDayEntry = {}
-	let lastHistoryEntry = {}
-
-	if(history.length > 0) {
-		lastHistoryEndOfDayEntry = history
-			.reverse()
-			.find( e => e['end_day'] === true )
-
-		lastHistoryEntry = history[history.length - 1]
-
-	} else {
-		console.log('no hay entradas')
-	}
-	
-	console.groupEnd()
-	
-
-	const [ newEntry, setNewEntry ] = useState({
-		...lastHistoryEntry
-	})
-
-	const handleChange = (evt) => {
-		const { value, name } = evt.target
-
-		switch(name){
-			case 'slp':
-				setNewEntry({...newEntry, slp: Number(value)})
-				break
-		
-			default:
-				throw new Error(`Launch and error`)
-				break
-		}
-	}
-
-	return (
-		<div>
-			<div className="modal">
-				<div className="modal-header">
-					<p>Marcar fin del día</p>
-				</div>
-				<div className="modal-body">
-					<p>Total de SLP</p>
-					<p>
-						<label>ayer: </label>
-						<input type="number"/>
-					</p>
-					<p>
-						<label>hoy: </label>
-						<input type="number"
-							name="slp"
-							placeholder={1100}
-							value={newEntry.slp}
-							onChange={handleChange}/>
-					</p>
-					</div>
-				<div className="modal-footer">
-					<button onClick={() => {
-						onAction({ type: 'scholar:mark', payload: newEntry })	
-					}}>
-						Listo
-					</button>
-					<button onClick={() => {
-						onAction({ type: 'cancel' })
-					}}>
-						Cancelar
-					</button>
-				</div>
-			</div>
-		</div>
-		)
-}
-
 export default function ScholarTable(props) {
 	const { 
 		scholars, 
@@ -126,7 +47,13 @@ export default function ScholarTable(props) {
 
 			case 'mark':
 				console.log(payload)
-				onAction({ type: 'scholar:mark:start', payload })
+				onAction({ 
+					type: 'change-mode', 
+					payload: {
+						mode: 'mark',
+						scholar: payload
+					}
+				})
 				break
 
 			default:
@@ -150,7 +77,7 @@ export default function ScholarTable(props) {
 				<td>{ scholar.name }</td>
 				<td>{ scholar.discord }</td>
 				<td>{ scholar.mmr.total }</td>
-				<td>{ scholar.performance }</td>
+				<td>{ scholar.level }</td>
 				<td>{ scholar.percent }</td>
 
 
@@ -174,10 +101,6 @@ export default function ScholarTable(props) {
 			<h1>Becados</h1>
 			<button onClick={() => handleAction('update-server')}>Actualizar Servidor</button>
 			<button onClick={() => handleAction('new')}>Nuevo becado</button>
-
-			<ModalEndOfDay 
-				currentScholarMark={props.currentScholarMark}
-				onAction={onAction}/>
 
 			<table  border="1">
 				<thead>

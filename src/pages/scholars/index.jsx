@@ -5,6 +5,7 @@ import { useState, useEffect, useReducer } from 'react'
 import NewScholarForm from './new-form'
 import EditScholarForm from './edit-form'
 import ScholarsTable from './table'
+import ModalEndOfDay from './modal-end-of-day'
 
 import Button from '../../components/button'
 
@@ -198,9 +199,7 @@ export default function Scholars({}) {
 			view = (
 				<ScholarsTable
 					scholars={ state.scholars }
-					onAction={ dispatch }
-
-					currentScholarMark={state.currentScholarMark}/>)
+					onAction={ dispatch }/>)
 			break
 
 		case 'new':
@@ -218,13 +217,21 @@ export default function Scholars({}) {
 				)
 			break
 
+		case 'mark':
+			view = <ModalEndOfDay 
+						currentScholarMark={state.currentScholarMark}
+						onAction={dispatch}/>
+			break
+		
+		
+
 		default:
 			break
 	}
 	
 	return (
 			<div>
-				{ view }	
+				{ view }
 			</div>
 		)
 }
@@ -241,7 +248,6 @@ const reducer = (state, action) => {
 			}
 			break
 		
-		
 		case 'change-mode':
 			newState = {
 				...state,
@@ -252,6 +258,10 @@ const reducer = (state, action) => {
 				newState.currentEditing = action.payload.scholar
 			}
 
+			if(newState.mode === 'mark') {
+				newState.currentScholarMark = action.payload.scholar
+			}
+
 			return newState
 			break			
 		//--------------
@@ -259,7 +269,6 @@ const reducer = (state, action) => {
 			newState = 
 			{
 				...state,
-
 				mode: 'table'
 			}
 
@@ -297,6 +306,7 @@ const reducer = (state, action) => {
 			console.log('starting mark')
 			newState = {
 				...state,
+				showMarking: true,
 				currentScholarMark: payload
 			}
 
@@ -307,13 +317,10 @@ const reducer = (state, action) => {
 
 		case 'scholar:mark':
 			console.log(`scholar:mark - the payload is: ${JSON.stringify(payload, null, 4)}`)
-			/*
-				return {
-					...state,
-					mark: 
-				}
-			*/
-			return state
+			return {
+				...state,
+				mode: 'table'
+			}
 			break
 
 		//------------------
