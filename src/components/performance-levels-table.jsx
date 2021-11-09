@@ -1,4 +1,5 @@
-export default function PerformanceLevelsTable({ data }) {
+export default function PerformanceLevelsTable({ data, onDelete }) {
+
 	return (
 		<div>
 			<h1>Niveles de Desempeño</h1>
@@ -28,8 +29,7 @@ export default function PerformanceLevelsTable({ data }) {
 							<td>{ level.percentage.scholar }</td>
 							<td>{ level.percentage.manager }</td>
 							<td>{ level.percentage.investor }</td>
-							<td><button>del</button></td>
-							<td><button>edit</button></td>
+							<td><button onClick={ (evt) => onDelete(level.id) }>del</button></td>
 						</tr>
 					))}
 				</tbody>

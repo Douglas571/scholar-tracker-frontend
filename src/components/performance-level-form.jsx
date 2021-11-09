@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-export default function PerformanceLevelForm({ onSubmit }) {
-	let [bottomSLP, setBottomSLP] = useState(0)
+export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
+
 	let [topSLP, setTopSLP] = useState(0)
 
 	let [scholarPercent, setScholarPercent] = useState(0)
 
 	let [managerPercent, setManagerPercent] = useState(0)
 	let [invPercent, setInvPercent] = useState(100)
+
+	useEffect(() => {
+		setTopSLP(nextMinSLP + 1)
+	}, [nextMinSLP])
 
 	const handleInputChange = (evt) => {
 		console.log('PerformanceLevelForm - handleInputChange')
@@ -18,9 +22,6 @@ export default function PerformanceLevelForm({ onSubmit }) {
 		let newInvPercent = 0
 
 		switch(name) {
-			case 'bottom':
-				setBottomSLP(value)
-				break
 
 			case 'top':
 				setTopSLP(value)
@@ -61,7 +62,7 @@ export default function PerformanceLevelForm({ onSubmit }) {
 
 		let performLevel = {
 			SLP: {
-				bottom: bottomSLP,
+				bottom: nextMinSLP,
 				top: topSLP
 			},
 
@@ -83,10 +84,10 @@ export default function PerformanceLevelForm({ onSubmit }) {
 	            <p>
 	            	<label>SLP:</label>
 	            	<input type="number" name="bottom" 
-	            		value={ bottomSLP } onChange={ handleInputChange } disabled/>
+	            		value={ nextMinSLP } onChange={ handleInputChange } disabled/>
 	            	-
 	            	<input type="number" name="top"  value={ topSLP } onChange={ handleInputChange }
-	            	min={ bottomSLP }/>
+	            	min={ nextMinSLP + 1 }/>
 	            </p>
 	            
 	            <h2>Porcentajes</h2>

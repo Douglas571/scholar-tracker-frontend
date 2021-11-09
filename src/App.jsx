@@ -6,6 +6,7 @@ const HOST = 'http://localhost:4000'
 
 function App() {
     let [ performanceLevels, setPerformanceLevel ] = useState([])
+    let [ nextMinSLP, setNextMinSLP ] = useState(0)
 
     const handleNewLevel = async (newPerformanceLevel) => {
         console.log('App - handleNewLevel')
@@ -23,8 +24,21 @@ function App() {
         console.log('response:')
         let json = await res.json()
 
-        setPerformanceLevel(json.performanceLevels)
+        updateData()
 
+    }
+
+    const handleDeleteLevel = async (id) => {
+        console.log('delete level: ', id)
+        console.log(id)
+
+        let res = await fetch(`${HOST}/performance-levels/${id}`, {
+            method: 'delete'
+        })
+
+        let json = await res.json()
+        console.log('response: ', json)
+        updateData()
     }
 
     const updateData = async () => {
@@ -34,8 +48,16 @@ function App() {
 
         let json = await res.json()
 
+        let newNextMinSLP = json.nextMinSLP
         setPerformanceLevel(json.performanceLevels)
+        setNextMinSLP(json.nextMinSLP)
 
+        console.log(json)
+        
+        //console.log(performanceLevels)
+
+        //console.log('newNextMinSLP:', newNextMinSLP, typeof newNextMinSLP)
+        //console.log(`nextMinSLP: ${nextMinSLP}, ${typeof nextMinSLP}`)
     }
 
     useEffect(() => {
@@ -44,8 +66,8 @@ function App() {
 
   return (
     <div>
-        <PerformanceLevelForm onSubmit={ handleNewLevel }/>
-        <PerformanceLevelsTable data= { performanceLevels }/>
+        <PerformanceLevelForm onSubmit={ handleNewLevel } nextMinSLP={ nextMinSLP }/>
+        <PerformanceLevelsTable data= { performanceLevels } onDelete={ handleDeleteLevel }/>
     </div>
   );
 }
