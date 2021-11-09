@@ -25,7 +25,7 @@ export default function PerformanceLevelsTable({ data, onDelete }) {
 					{ data.map((level) => (
 						<tr key={ level.id }>
 							<td>{ level.level }</td>
-							<td>{ level.SLP.bottom } - { level.SLP.top }</td>
+							<td>{ level.slp.bottom } - { level.slp.top }</td>
 							<td>{ level.percentage.scholar }</td>
 							<td>{ level.percentage.manager }</td>
 							<td>{ level.percentage.investor }</td>

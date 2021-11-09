@@ -61,7 +61,7 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 		console.log('PerformanceLevelForm - handleSubmit')
 
 		let performLevel = {
-			SLP: {
+			slp: {
 				bottom: nextMinSLP,
 				top: topSLP
 			},
