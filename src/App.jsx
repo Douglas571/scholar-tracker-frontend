@@ -1,31 +1,51 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PerformanceLevelForm from './components/performance-level-form'
 import PerformanceLevelsTable from './components/performance-levels-table'
 
+const HOST = 'http://localhost:4000'
+
 function App() {
-  const handleNewLevel = async (newPerformanceLevel) => {
-    console.log('App - handleNewLevel')
+    let [ performanceLevels, setPerformanceLevel ] = useState([])
 
-    const payload = { performanceLevel: newPerformanceLevel}
+    const handleNewLevel = async (newPerformanceLevel) => {
+        console.log('App - handleNewLevel')
 
-    let res = await fetch('http://localhost:4000/performance-levels', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'Application/json'
-      },
-      body: JSON.stringify(payload)
-    })
+        const payload = { performanceLevel: newPerformanceLevel}
 
-    console.log('response:')
-    let json = await res.json()
+        let res = await fetch(`${HOST}/performance-levels`, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'Application/json'
+          },
+          body: JSON.stringify(payload)
+        })
 
-    console.log(json)
-  }
+        console.log('response:')
+        let json = await res.json()
+
+        setPerformanceLevel(json.performanceLevels)
+
+    }
+
+    const updateData = async () => {
+        let res = await fetch(`${HOST}/performance-levels`, {
+            method: 'get'
+        })
+
+        let json = await res.json()
+
+        setPerformanceLevel(json.performanceLevels)
+
+    }
+
+    useEffect(() => {
+        updateData()
+    }, [])
 
   return (
     <div>
-      <PerformanceLevelForm onSubmit={ handleNewLevel }/>
-      <PerformanceLevelsTable/>
+        <PerformanceLevelForm onSubmit={ handleNewLevel }/>
+        <PerformanceLevelsTable data= { performanceLevels }/>
     </div>
   );
 }
