@@ -20,7 +20,6 @@ function App() {
 
         let json = await res.json()
 
-        let newNextMinSLP = json.nextMinSLP
         setPerformanceLevel(json.performanceLevels)
         setNextMinSLP(json.nextMinSLP)
 
@@ -55,7 +54,7 @@ function App() {
         console.log('response:')
         let json = await res.json()
 
-        console.groupEnd()
+        console.groupEnd(json)
 
         updateData()
 
@@ -96,15 +95,61 @@ function App() {
         updateData()
     }
 
+    function topDownSort(property) {
+        return (a, b) => {
+            if (a[property] === b[property]) {
+                return 0
+            } else if (a[property] > b[property]) {
+                return -1
+            } else {
+                return 1
+            }
+        }
+    }
+
+    function downTopSort(property) {
+        return (a, b) => {
+            if (a[property] === b[property]) {
+                return 0
+            } else if (a[property] > b[property]) {
+                return 1
+            } else {
+                return -1
+            }
+        }
+    }
+
+    let [ sortTopDown, setSortTopDown ] = useState(false)
+    let [ sortBy, setSortBy ] = useState('')
+
+    const handleScholarsSort = (by) => {
+        let newScholars
+
+        setSortBy(by)
+
+        if (sortTopDown) {
+            console.log('sort', by, 'top-down ˄')
+            newScholars = scholars.sort(topDownSort(by))
+            setSortTopDown(false)
+        } else {
+            console.log('sort', by, 'down-top ˅')
+            newScholars = scholars.sort(downTopSort(by))
+            setSortTopDown(true)
+        }
+
+        setScholars([...newScholars])
+
+    }
+
 
   return (
-    <div>
+    <div id='main'>
         <h1>Domain: { HOST }</h1>
         <PerformanceLevelForm onSubmit={ handleNewLevel } nextMinSLP={ nextMinSLP }/>
         <PerformanceLevelsTable data= { performanceLevels } onDelete={ handleDeleteLevel }/>
 
         <ScholarForm onSubmit={ handleNewScholar }/>
-        <ScholarTable data={ scholars }/>
+        <ScholarTable data={ scholars } onSort={ handleScholarsSort } sortTopDown={ sortTopDown } sortBy={ sortBy }/>
     </div>
   );
 }

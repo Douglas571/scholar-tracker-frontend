@@ -1,4 +1,11 @@
-export default function ScholarTable({ data }) {
+export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
+	let defaultIcon = '˄˅'
+	let selectedIcon = (sortTopDown)? '˅': '˄'
+
+	console.log('selectedIcon: ', selectedIcon)
+
+	console.log('sortBy: ', sortBy)
+
 	return (
 		<div>
 			<h1>Becados</h1>
@@ -10,18 +17,18 @@ export default function ScholarTable({ data }) {
 						<th colSpan='2'></th>
 					</tr>
 					<tr>
-						<th>Nombre</th>
-						<th>SLP</th>
-						<th>MMR</th>
-						<th>Desempeño</th>
-						<th>%</th>
+						<th>Nombre ˄˅</th>
+						<th onClick={ () => onSort('slp') }>SLP <button>{ (sortBy === 'slp')? selectedIcon: defaultIcon}</button></th>
+						<th onClick={ () => onSort('mmr') }>MMR <button>{ (sortBy === 'mmr')? selectedIcon: defaultIcon}</button></th>
+						<th>Desempeño ˄˅</th>
+						<th onClick={ () => onSort('percent') }>% <button>{ (sortBy === 'percent')? selectedIcon: defaultIcon}</button></th>
 
-						<th>Becado</th>
-						<th>Manager</th>
-						<th>Inversor</th>
+						<th>Becado ˄˅</th>
+						<th>Manager ˄˅</th>
+						<th>Inversor ˄˅</th>
 
-						<th>Ronin</th>
-						<th>Ronin (pagos)</th>
+						<th>Ronin ˄˅</th>
+						<th>Ronin (pagos) ˄˅</th>
 					</tr>
 				</thead>
 				<tbody>
