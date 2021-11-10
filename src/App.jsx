@@ -6,7 +6,7 @@ import PerformanceLevelsTable from './components/performance-levels-table'
 import ScholarForm from './components/scholar-form'
 import ScholarTable from './components/scholar-table'
 
-const HOST = 'http://localhost:4000'
+const HOST = process.env.REACT_APP_D
 
 function App() {
     let [ performanceLevels, setPerformanceLevel ] = useState([])
@@ -99,6 +99,7 @@ function App() {
 
   return (
     <div>
+        <h1>Domain: { HOST }</h1>
         <PerformanceLevelForm onSubmit={ handleNewLevel } nextMinSLP={ nextMinSLP }/>
         <PerformanceLevelsTable data= { performanceLevels } onDelete={ handleDeleteLevel }/>
 
