@@ -5,6 +5,18 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 	let [level, setLevel] = useState(0)
 	let [ranges, setRanges] = useState([])
 
+	/*
+		let [newRange, setNewRange] = useState({
+			order: 0,
+			slp: 0
+			percentage: {
+				scholar: 0,
+				manager: 0,
+				investor: 0
+			}
+		})
+	*/
+
 	let [topSLP, setTopSLP] = useState(0)
 
 	let [scholarPercent, setScholarPercent] = useState(0)
@@ -66,6 +78,7 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 	const handleNewRange = () => {
 		console.log(`PerformanceLevelForm - handle new range`)
 		const newRange = {
+			order: Date.now(),
 			slp: topSLP,
 			percentage: {
 				scholar: scholarPercent,
@@ -75,6 +88,11 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 		}
 
 		setRanges([...ranges, newRange])
+	}
+
+	const handleDeleteRange = (evt, id) => {
+		evt.preventDefault()
+		console.log(`the range to delete is: ${id}`)
 	}
 
 	const handleSubmit = (evt) => {
@@ -98,6 +116,33 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 		onSubmit(performLevel)
 	}
 
+	let rangesHTML = ranges.map( (range, idx) => {
+		if (idx == 0) {
+			return (
+					<tr>
+						<td rowSpan={ ranges.length + 1 }>
+								<input type="number" name="level" value={ level } onChange={ handleInputChange } required/>
+							</td>
+						<td>{ range.slp }</td>
+						<td>{ range.percentage.scholar }%</td>
+						<td>{ range.percentage.manager }%</td>
+						<td>{ range.percentage.investor }%</td>
+						<td onclick={ (evt) => { handleDeleteRange(evt, range.order) }}><button>x</button></td>
+					</tr>
+				)
+		}
+
+		return (
+				<tr>
+					<td>{ range.slp }</td>
+					<td>{ range.percentage.scholar }%</td>
+					<td>{ range.percentage.manager }%</td>
+					<td>{ range.percentage.investor }%</td>
+					<td><button>x</button></td>
+				</tr>
+			)
+	})
+
 	return (
 		<div>
 			<h1>Escala de Desempeño</h1>
@@ -117,17 +162,14 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 						</tr>
 					</thead>
 					<tbody>
+						{ rangesHTML }
 						<tr>
-							<td rowSpan="2">
-								<input type="number" name="level" value={ level } onChange={ handleInputChange } required/>
-							</td>
-							<td>74</td>
-							<td>20%</td>
-							<td>30%</td>
-							<td>50%</td>
-							<td><button>x</button></td>
-						</tr>
-						<tr>
+							{ ranges.length == 0 ? 
+								<td rowSpan={ ranges.length + 1 }>
+									<input type="number" name="level" value={ level } onChange={ handleInputChange } required/>
+								</td>
+								: null
+							}
 							<td>
 								<input type="number" name="top"  value={ topSLP } onChange={ handleInputChange }
 		            				min={ nextMinSLP + 1 }/>
