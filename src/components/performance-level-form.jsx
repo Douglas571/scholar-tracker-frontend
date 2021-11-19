@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
-export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
+export default function PerformanceLevelForm({ onSubmit }) {
 
 	let [ level, setLevel ] = useState(0)
 	let [ ranges, setRanges ] = useState([])
 	let [ rangePrevLength, setRangePrevLength ] = useState(ranges.length)
+	let [ weeklyMin, setWeeklyMin ] = useState(527)
+
+	let slpInput = useRef(null)
 
 
 	let [newRange, setNewRange] = useState({
@@ -14,7 +17,7 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 				scholar: 0,
 				manager: 0,
 				investor: 100
-			}
+			}			
 		})
 
 	useEffect(() => {
@@ -102,6 +105,10 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 			case 'inv-percent':
 				break
 
+			case 'weekly-min':
+				setWeeklyMin(value)
+				break
+
 			default:
 				break
 		}
@@ -122,6 +129,8 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 		switch(action) {
 			case 'create':
 				console.log(`creating new range`)
+				console.log(slpInput)
+				slpInput.current.focus()
 				setRanges([...ranges, newRange])
 				break
 
@@ -151,7 +160,8 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 
 		let performLevel = {
 			level,
-			ranges
+			ranges,
+			weeklyMin
 		}
 
 		console.log(`the new performance level is: ${JSON.stringify(performLevel, null, 4)}`)
@@ -166,7 +176,10 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 					<tr key={ range.order }>
 						<td rowSpan={ ranges.length + 1 }>
 								<input type="number" name="level" value={ level } onChange={ handleInputChange } required/>
-							</td>
+						</td>
+						<td  rowSpan={ ranges.length + 1 }>
+							<input type="number" name="weekly-min" value={ weeklyMin }  onChange={ handleInputChange }/>
+						</td>
 						<td>{ range.slp }</td>
 						<td>{ range.percentage.scholar }%</td>
 						<td>{ range.percentage.manager }%</td>
@@ -195,7 +208,8 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 				<table border="1">
 					<thead>
 						<tr>
-							<th rowSpan="3">Nivel</th>
+							<th rowSpan="2">Nivel</th>
+							<th rowSpan="2">Min. semanal</th>
 							<th rowSpan="2">Rango de SLP</th>
 							<th colSpan="3">Porcentage de pagos</th>
 						</tr>
@@ -209,13 +223,16 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 						{ rangesHTML }
 						<tr>
 							{ ranges.length === 0 ? 
-								<td rowSpan={ ranges.length + 1 }>
-									<input type="number" name="level" value={ level } onChange={ handleInputChange } required/>
-								</td>
+								<>
+									<td rowSpan={ ranges.length + 1 }>
+										<input type="number" name="level" value={ level } onChange={ handleInputChange } required/>
+									</td>
+									<td><input type="number" name="weekly-min" value={ weeklyMin }  onChange={ handleInputChange }/></td>
+								</>	
 								: null
 							}
 							<td>
-								<input type="number" name="top"  value={ newRange.slp } onChange={ handleInputChange }
+								<input type="number" name="top" ref={ slpInput }  value={ newRange.slp } onChange={ handleInputChange }
 		            				min={ 0 }/>
 		            		</td>
 							<td>

@@ -9,7 +9,9 @@ export default function PerformanceLevelsTable({ data, onDelete }) {
 			<table border='1'>
 				<thead>
 					<tr>
-						<th colSpan="6">Nivel</th>
+						<th>Nivel</th>
+						<th>Minimo semanal</th>
+						<th  colSpan="4"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -19,6 +21,7 @@ export default function PerformanceLevelsTable({ data, onDelete }) {
 							return (
 								<tr key={ level.id }>
 									<td>{ level.level }</td>
+									<td>{ level.weeklyMin}</td>
 									<td  colSpan="4">
 										<table border="1">
 											<tr>
