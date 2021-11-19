@@ -45,18 +45,27 @@ export default function ScholarForm({ onSubmit }) {
 				<p>
 					<label>Nombre: </label>
 	            	<input type="text" name="scholar-name"
+	            		placeholder="Mario"
 	            		value={ scholarName } onChange={ handleChange }/>
 				</p>
 
 				<p>
 	            	<label>Ronin: </label>
 	            	<input type="text" name="ronin"
+	            		placeholder="0x000..."
 	            		value={ ronin } onChange={ handleChange }/>
 				</p>
 
 				<p>
 	            	<label>Ronin (pagos): </label>
 	            	<input type="text" name="ronin-pay"
+	            		placeholder="0x000..."
+	            		value={ roninForPay } onChange={ handleChange }/>
+				</p>
+				<p>
+	            	<label>Discord: </label>
+	            	<input type="text" name="ronin-pay"
+	            		placeholder="name@1234"
 	            		value={ roninForPay } onChange={ handleChange }/>
 				</p>
 				
