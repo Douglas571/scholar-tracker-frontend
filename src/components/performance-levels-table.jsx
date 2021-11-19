@@ -30,9 +30,9 @@ export default function PerformanceLevelsTable({ data, onDelete }) {
 											{ level.ranges.map( range => (
 												<tr key={ range.order }>
 													<td>{ range.slp }</td>
-													<td>{ range.percentage.scholar }</td>
-													<td>{ range.percentage.manager }</td>
-													<td>{ range.percentage.investor }</td>
+													<td>{ range.percentage.scholar }%</td>
+													<td>{ range.percentage.manager }%</td>
+													<td>{ range.percentage.investor }%</td>
 												</tr>
 											))
 											}
