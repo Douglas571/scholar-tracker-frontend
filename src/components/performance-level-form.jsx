@@ -2,35 +2,54 @@ import { useState, useEffect } from 'react'
 
 export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 
-	let [level, setLevel] = useState(0)
-	let [ranges, setRanges] = useState([])
+	let [ level, setLevel ] = useState(0)
+	let [ ranges, setRanges ] = useState([])
+	let [ rangePrevLength, setRangePrevLength ] = useState(ranges.length)
 
-	/*
-		let [newRange, setNewRange] = useState({
-			order: 0,
-			slp: 0
+
+	let [newRange, setNewRange] = useState({
+			order: 1,
+			slp: 0,
 			percentage: {
 				scholar: 0,
 				manager: 0,
-				investor: 0
+				investor: 100
 			}
 		})
-	*/
-
-	let [topSLP, setTopSLP] = useState(0)
-
-	let [scholarPercent, setScholarPercent] = useState(0)
-
-	let [managerPercent, setManagerPercent] = useState(0)
-	let [invPercent, setInvPercent] = useState(100)
 
 	useEffect(() => {
-		setTopSLP(nextMinSLP + 1)
-		console.log(`${JSON.stringify(ranges, null, 4)}`)
-	}, [nextMinSLP, ranges])
+		console.groupCollapsed(`useEffect - ranges`)
+		
+		console.log(`the ranges are: ${JSON.stringify(ranges, null, 4)}`)
+
+		// si el valor range.length > prevRangeLength; entonces ejecutar proceso adicional
+		if (ranges.length < rangePrevLength) {
+			console.log(`curr: ${ranges.length} < prev: ${rangePrevLength}`)
+			console.log(`borrado!!`)
+			setNewRange({...newRange, order: (ranges.length + 1)})
+			setRangePrevLength(ranges.length)
+
+
+		} else {
+			// si no; continuar normal
+			setNewRange({...newRange, order: (ranges.length + 1)})
+			setRangePrevLength(ranges.length)
+		}
+		
+		
+		console.groupEnd()
+	}, [ ranges ])
+
+	useEffect(() => {
+		console.groupCollapsed('use effect')
+
+		console.log(`the newRange: ${JSON.stringify(newRange, null, 4)}`)
+
+		console.groupEnd()
+	}, [ newRange ])
 
 	const handleInputChange = (evt) => {
-		console.log('PerformanceLevelForm - handleInputChange')
+		console.groupCollapsed('PerformanceLevelForm - handleInputChange')
 
 		let { name, value } = evt.target
 		value = Number(value)
@@ -43,83 +62,108 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 				break
 
 			case 'top':
-				setTopSLP(value)
+				setNewRange({...newRange, slp: value})
 				break
 
 			case 'scholar-percent':
-				newInvPercent = 100 - managerPercent - value
+				console.log(`the manager has: ${newRange.percentage.manager}`)
+				newInvPercent = 100 - newRange.percentage.manager - value
 
 				if (newInvPercent >= 0) {
-					setScholarPercent(value)
-					setInvPercent(newInvPercent)
+					setNewRange({...newRange, percentage: { 
+						...newRange.percentage,
+						scholar: value,
+						investor: newInvPercent } 
+					})
+
+					/*
+						setScholarPercent(value)
+						setInvPercent(newInvPercent)
+					*/
 				}
 
 				break
 
 			case 'manager-percent':
-				newInvPercent = 100 - scholarPercent - value
+				newInvPercent = 100 - newRange.percentage.scholar - value
 
 				if (newInvPercent >= 0) {
-					setManagerPercent(value)
-					setInvPercent(newInvPercent)
+					setNewRange({...newRange,
+						percentage: {
+							...newRange.percentage,
+							manager: value,
+							investor: newInvPercent
+						}
+					})
 				}
 					
 				break
 
 			case 'inv-percent':
-				setInvPercent(value)
 				break
 
 			default:
 				break
 		}
+		console.groupEnd()
 	}
 
-	const handleNewRange = () => {
-		console.log(`PerformanceLevelForm - handle new range`)
-		const newRange = {
-			order: Date.now(),
-			slp: topSLP,
-			percentage: {
-				scholar: scholarPercent,
-				managerPercent: managerPercent,
-				investor: invPercent
-			}
+	const handleAction = (evt) => {
+		evt.preventDefault()
+		console.groupCollapsed(`PerformanceLevelForm - handle action`)
+
+		const order = Number(evt.target.getAttribute('rangeid'))
+		const action = evt.target.getAttribute('action')
+
+		console.log(`the content is: `)
+		console.log(evt.target)
+		console.log(`and action is: ${action}`)
+
+		switch(action) {
+			case 'create':
+				console.log(`creating new range`)
+				setRanges([...ranges, newRange])
+				break
+
+			case 'delete':
+				console.log(`the range to delete is: ${order}`)
+				let newListOfRanges = ranges.filter( range => range.order !== order )
+				newListOfRanges = newListOfRanges.map( (range, idx) => {
+					range.order = (idx + 1)
+					return range
+				})
+				
+				console.log(`the new list of ranges are: ${JSON.stringify(newListOfRanges, null, 4)}`)
+
+				setRanges([...newListOfRanges])
+				break
+
+			default:
+				break
 		}
 
-		setRanges([...ranges, newRange])
-	}
-
-	const handleDeleteRange = (evt, id) => {
-		evt.preventDefault()
-		console.log(`the range to delete is: ${id}`)
+		console.groupEnd()
 	}
 
 	const handleSubmit = (evt) => {
 		evt.preventDefault()
-		console.log('PerformanceLevelForm - handleSubmit')
+		console.groupCollapsed('PerformanceLevelForm - handleSubmit')
 
 		let performLevel = {
-			slp: {
-				bottom: nextMinSLP,
-				top: topSLP
-			},
-
-			percentage: {
-				scholar: scholarPercent,
-				manager: managerPercent,
-				investor: invPercent
-			}
+			level,
+			ranges
 		}
 
-		//console.log(performLevel)
+		console.log(`the new performance level is: ${JSON.stringify(performLevel, null, 4)}`)
+		console.groupEnd()
+
 		onSubmit(performLevel)
 	}
 
 	let rangesHTML = ranges.map( (range, idx) => {
 		if (idx == 0) {
 			return (
-					<tr>
+					<tr key={ range.order }>
 						<td rowSpan={ ranges.length + 1 }>
 								<input type="number" name="level" value={ level } onChange={ handleInputChange } required/>
 							</td>
@@ -127,18 +171,18 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 						<td>{ range.percentage.scholar }%</td>
 						<td>{ range.percentage.manager }%</td>
 						<td>{ range.percentage.investor }%</td>
-						<td onclick={ (evt) => { handleDeleteRange(evt, range.order) }}><button>x</button></td>
+						<td><button rangeid={ range.order } action="delete" onClick={ handleAction }>x</button></td>
 					</tr>
 				)
 		}
 
 		return (
-				<tr>
+				<tr  key={ range.order }>
 					<td>{ range.slp }</td>
 					<td>{ range.percentage.scholar }%</td>
 					<td>{ range.percentage.manager }%</td>
 					<td>{ range.percentage.investor }%</td>
-					<td><button>x</button></td>
+					<td><button rangeid={ range.order } action="delete" onClick={ handleAction }>x</button></td>
 				</tr>
 			)
 	})
@@ -164,31 +208,31 @@ export default function PerformanceLevelForm({ nextMinSLP, onSubmit }) {
 					<tbody>
 						{ rangesHTML }
 						<tr>
-							{ ranges.length == 0 ? 
+							{ ranges.length === 0 ? 
 								<td rowSpan={ ranges.length + 1 }>
 									<input type="number" name="level" value={ level } onChange={ handleInputChange } required/>
 								</td>
 								: null
 							}
 							<td>
-								<input type="number" name="top"  value={ topSLP } onChange={ handleInputChange }
-		            				min={ nextMinSLP + 1 }/>
+								<input type="number" name="top"  value={ newRange.slp } onChange={ handleInputChange }
+		            				min={ 0 }/>
 		            		</td>
 							<td>
 								<input type="number" name="scholar-percent"
 					            	min='0' max='100'
-					            	value={ scholarPercent } onChange={ handleInputChange }/>
+					            	value={ newRange.percentage.scholar } onChange={ handleInputChange }/>
 							</td>
 							<td>
 								<input type="number" name="manager-percent"
 					            	min='0' max='100'
-					            	value={ managerPercent } onChange={ handleInputChange }/>
+					            	value={ newRange.percentage.manager } onChange={ handleInputChange }/>
 							</td>
 							<td>
 								<input type="number" name="inv-percent" disabled
-		              				value={ invPercent } onChange={ handleInputChange }/>
+		              				value={ newRange.percentage.investor } onChange={ handleInputChange }/>
 							</td>
-							<td onClick={ handleNewRange }><button>+</button></td>
+							<td><button key={ null } action="create" onClick={ handleAction }>+</button></td>
 						</tr>
 					</tbody>
 				</table>
