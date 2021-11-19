@@ -1,5 +1,7 @@
 export default function PerformanceLevelsTable({ data, onDelete }) {
+	//<td><button onClick={ (evt) => onDelete(level.id) }>del</button></td>
 
+	console.log(data)
 	return (
 		<div>
 			<h1>Niveles de Desempeño</h1>
@@ -7,31 +9,44 @@ export default function PerformanceLevelsTable({ data, onDelete }) {
 			<table border='1'>
 				<thead>
 					<tr>
-						<th></th>
-						<th></th>
-						<th colSpan="3">Porcentaje</th>
-						<th colSpan="2" rowSpan="2"></th>
-
-					</tr>
-					<tr>
-						<th>Nivel</th>
-						<th>SLP</th>
-						<th>Becado</th>
-						<th>Manager</th>
-						<th>Inversor</th>
+						<th colSpan="6">Nivel</th>
 					</tr>
 				</thead>
 				<tbody>
-					{ data.map((level) => (
-						<tr key={ level.id }>
-							<td>{ level.level }</td>
-							<td>{ level.slp.bottom } - { level.slp.top }</td>
-							<td>{ level.percentage.scholar }</td>
-							<td>{ level.percentage.manager }</td>
-							<td>{ level.percentage.investor }</td>
-							<td><button onClick={ (evt) => onDelete(level.id) }>del</button></td>
-						</tr>
-					))}
+
+					{ (data.length > 0)? 
+						data.map( level => {
+							return (
+								<tr key={ level.id }>
+									<td>{ level.level }</td>
+									<td  colSpan="4">
+										<table border="1">
+											<tr>
+												<th>SLP</th>
+												<th>Becado</th>
+												<th>Manager</th>
+												<th>Inversor</th>
+											</tr>
+											{ level.ranges.map( range => (
+												<tr key={ range.order }>
+													<td>{ range.slp }</td>
+													<td>{ range.percentage.scholar }</td>
+													<td>{ range.percentage.manager }</td>
+													<td>{ range.percentage.investor }</td>
+												</tr>
+											))
+											}
+										</table>
+									</td>
+									<td><button onClick={ () => onDelete(level.id) }>del</button></td>
+								</tr>
+							)
+						})
+						:
+						<tr><td>no hay datos</td></tr>
+					}
+
+					
 				</tbody>
 			</table>
 

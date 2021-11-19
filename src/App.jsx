@@ -9,27 +9,27 @@ import ScholarTable from './components/scholar-table'
 const HOST = process.env.REACT_APP_D
 
 function App() {
-    let [ performanceLevels, setPerformanceLevel ] = useState([])
+    let [ performanceLevels, setPerformanceLevels ] = useState([])
     let [ scholars, setScholars ] = useState([])
     let [ nextMinSLP, setNextMinSLP ] = useState(0)
 
     const updateData = async () => {
-        let res = await fetch(`${HOST}/performance-levels`, {
+        let res = await fetch(`${HOST}/v2/performance-levels`, {
             method: 'get'
         })
 
         let json = await res.json()
 
-        setPerformanceLevel(json.performanceLevels)
-        setNextMinSLP(json.nextMinSLP)
+        json.performanceLevels = json.performanceLevels.sort( (a, b) => a.level - b.level)
+
+        setPerformanceLevels(json.performanceLevels)
+        console.log(`Resived performance levels: ${JSON.stringify(json.performanceLevels, null, 4)}`)
 
         res = await fetch(`${HOST}/scholars`, {
             method: 'get'
         })
 
         json = await res.json()
-
-        console.log(json)
 
         setScholars(json.scholars)
     }
@@ -43,7 +43,7 @@ function App() {
 
         const payload = { performanceLevel: newPerformanceLevel}
 
-        let res = await fetch(`${HOST}/performance-levels`, {
+        let res = await fetch(`${HOST}/v2/performance-levels`, {
           method: 'post',
           headers: {
             'Content-Type': 'Application/json'
@@ -51,10 +51,11 @@ function App() {
           body: JSON.stringify(payload)
         })
 
-        console.log('response:')
+        
         let json = await res.json()
+        console.log(`response: ${JSON.stringify(json, null, 4)}`)
 
-        console.groupEnd(json)
+        console.groupEnd()
 
         updateData()
 
@@ -64,7 +65,7 @@ function App() {
         console.group('delete level: ', id)
         console.log(id)
 
-        let res = await fetch(`${HOST}/performance-levels/${id}`, {
+        let res = await fetch(`${HOST}/v2/performance-levels/${id}`, {
             method: 'delete'
         })
 
