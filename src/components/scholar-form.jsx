@@ -46,14 +46,14 @@ export default function ScholarForm({ onSubmit }) {
 					<label>Nombre: </label>
 	            	<input type="text" name="scholar-name"
 	            		placeholder="Mario"
-	            		value={ scholarName } onChange={ handleChange }/>
+	            		value={ scholarName } onChange={ handleChange } required/>
 				</p>
 
 				<p>
 	            	<label>Ronin: </label>
 	            	<input type="text" name="ronin"
 	            		placeholder="0x000..."
-	            		value={ ronin } onChange={ handleChange }/>
+	            		value={ ronin } onChange={ handleChange } required/>
 				</p>
 
 				<p>

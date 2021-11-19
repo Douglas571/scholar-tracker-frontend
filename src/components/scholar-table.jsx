@@ -2,9 +2,12 @@ export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
 	let defaultIcon = '˄˅'
 	let selectedIcon = (sortTopDown)? '˅': '˄'
 
-	console.log('selectedIcon: ', selectedIcon)
+	console.groupCollapsed(`ScholarTable - main`)
 
+	console.log('selectedIcon: ', selectedIcon)
 	console.log('sortBy: ', sortBy)
+
+	console.groupEnd()
 
 	let scholarRows = data.map( scholar => {
 		scholar.slp = (scholar.slp)? scholar.slp : {}
@@ -12,6 +15,7 @@ export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
 		return (
 			<tr>
 				<td>{ scholar.name }</td>
+				<td>{ scholar.discord }</td>
 				<td>{ scholar.mmr }</td>
 				<td>{ scholar.performance }</td>
 				<td>{ scholar.percent }</td>
@@ -38,7 +42,7 @@ export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
 			<table  border="1">
 				<thead>
 					<tr>
-						<th colSpan='4'></th>
+						<th colSpan='5'></th>
 
 						<th colSpan='3'>SLP</th>
 
@@ -47,6 +51,7 @@ export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
 					</tr>
 					<tr>
 						<th>Nombre ˄˅</th>
+						<th>Discord</th>
 						<th onClick={ () => onSort('mmr') }>MMR <button>{ (sortBy === 'mmr')? selectedIcon: defaultIcon}</button></th>
 						<th>Nivel ˄˅</th>
 						<th onClick={ () => onSort('percent') }>% <button>{ (sortBy === 'percent')? selectedIcon: defaultIcon}</button></th>

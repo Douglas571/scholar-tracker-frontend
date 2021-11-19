@@ -1,7 +1,7 @@
 export default function PerformanceLevelsTable({ data, onDelete }) {
 	//<td><button onClick={ (evt) => onDelete(level.id) }>del</button></td>
 
-	console.log(data)
+	data = data || []
 	return (
 		<div>
 			<h1>Niveles de Desempeño</h1>

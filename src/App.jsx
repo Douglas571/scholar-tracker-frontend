@@ -14,24 +14,31 @@ function App() {
     let [ nextMinSLP, setNextMinSLP ] = useState(0)
 
     const updateData = async () => {
-        let res = await fetch(`${HOST}/v2/performance-levels`, {
-            method: 'get'
-        })
+        console.groupCollapsed(`APP - Update Data`)
+        
+            let res = await fetch(`${HOST}/v2/performance-levels`, {
+                method: 'get'
+            })
 
-        let json = await res.json()
+            let json = await res.json()
 
-        json.performanceLevels = json.performanceLevels.sort( (a, b) => a.level - b.level)
+            json.performanceLevels = json.performanceLevels.sort( (a, b) => a.level - b.level)
+
+            console.log(`Resived performance levels: ${JSON.stringify(json.performanceLevels, null, 4)}`)
+
+            res = await fetch(`${HOST}/v2/scholars`, {
+                method: 'get'
+            })
+
+            json = await res.json()
+            
+            console.log(`the scholars are: ${JSON.stringify(json.scholars, null, 4)}`)
+        
+        console.groupEnd()
 
         setPerformanceLevels(json.performanceLevels)
-        console.log(`Resived performance levels: ${JSON.stringify(json.performanceLevels, null, 4)}`)
-
-        res = await fetch(`${HOST}/scholars`, {
-            method: 'get'
-        })
-
-        json = await res.json()
-
         setScholars(json.scholars)
+
     }
 
     useEffect(() => {
@@ -77,10 +84,10 @@ function App() {
     }
 
     const handleNewScholar = async (newScholar) => {
-        console.group('App - handleNewScholar')
+        console.group('App - handle New Scholar')
         console.log(newScholar)
 
-        const res = await fetch(`${HOST}/scholars`, {
+        const res = await fetch(`${HOST}/v2/scholars`, {
             method: 'post',
             headers: {
                 'Content-Type': 'Application/json'
