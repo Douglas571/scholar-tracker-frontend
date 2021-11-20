@@ -5,20 +5,36 @@ export default function ScholarForm({ onSubmit }) {
 	let [ ronin, setRonin ] = useState('')
 	let [ roninForPay, setRoninForPay ] = useState('')
 
+	let [ newScholar, setNewScholar ] = useState({
+		name: '',
+		level: 1,
+		ronin: '',
+		roninForPay: '',
+		discord: ''
+	})
+
 	const handleChange = (evt) => {
 		const { name, value } = evt.target
 
 		switch(name) {
 			case 'scholar-name':
-				setScholarName(value)
+				setNewScholar({...newScholar, name: value})
+				break
+
+			case 'level':
+				setNewScholar({...newScholar, level: value})
 				break
 
 			case 'ronin':
-				setRonin(value)
+				setNewScholar({...newScholar, ronin: value})
 				break
 
 			case 'ronin-pay':
-				setRoninForPay(value)
+				setNewScholar({...newScholar, roninForPay: value})
+				break
+
+			case 'discord':
+				setNewScholar({...newScholar, discord: value})
 				break
 
 			default:
@@ -28,13 +44,6 @@ export default function ScholarForm({ onSubmit }) {
 
 	const handleSubmit = (evt) => {
 		evt.preventDefault()
-
-		let newScholar = {
-			name: scholarName,
-			ronin,
-			roninForPay
-		}
-
 		onSubmit(newScholar)
 	}
 
@@ -46,27 +55,27 @@ export default function ScholarForm({ onSubmit }) {
 					<label>Nombre: </label>
 	            	<input type="text" name="scholar-name"
 	            		placeholder="Mario"
-	            		value={ scholarName } onChange={ handleChange } required/>
+	            		value={ newScholar.name } onChange={ handleChange } required/>
 				</p>
 
 				<p>
 	            	<label>Ronin: </label>
 	            	<input type="text" name="ronin"
 	            		placeholder="0x000..."
-	            		value={ ronin } onChange={ handleChange } required/>
+	            		value={ newScholar.ronin } onChange={ handleChange } required/>
 				</p>
 
 				<p>
 	            	<label>Ronin (pagos): </label>
 	            	<input type="text" name="ronin-pay"
 	            		placeholder="0x000..."
-	            		value={ roninForPay } onChange={ handleChange }/>
+	            		value={ newScholar.roninForPay } onChange={ handleChange }/>
 				</p>
 				<p>
 	            	<label>Discord: </label>
-	            	<input type="text" name="ronin-pay"
+	            	<input type="text" name="discord"
 	            		placeholder="name@1234"
-	            		value={ roninForPay } onChange={ handleChange }/>
+	            		value={ newScholar.discord } onChange={ handleChange }/>
 				</p>
 				
 				<button>Agregar</button>
