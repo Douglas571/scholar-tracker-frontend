@@ -1,7 +1,13 @@
 export default function PerformanceLevelsTable({ data, onDelete }) {
 	//<td><button onClick={ (evt) => onDelete(level.id) }>del</button></td>
 
+	console.groupCollapsed(`Performance Levels Table - main`)
+	
+	console.log(`The data is:${JSON.stringify(data, null, 4)}`)
 	data = data || []
+	console.log(`The data VERIFY is: ${JSON.stringify(data, null, 4)}`)
+	console.groupEnd()
+	
 	return (
 		<div>
 			<h1>Niveles de Desempeño</h1>

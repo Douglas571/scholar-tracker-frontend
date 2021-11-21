@@ -1,10 +1,6 @@
 import { useState } from 'react'
 
 export default function ScholarForm({ onSubmit }) {
-	let [ scholarName, setScholarName ] = useState('')
-	let [ ronin, setRonin ] = useState('')
-	let [ roninForPay, setRoninForPay ] = useState('')
-
 	let [ newScholar, setNewScholar ] = useState({
 		name: '',
 		level: 1,

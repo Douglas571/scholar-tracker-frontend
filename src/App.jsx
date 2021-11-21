@@ -11,33 +11,34 @@ const HOST = process.env.REACT_APP_D
 function App() {
     let [ performanceLevels, setPerformanceLevels ] = useState([])
     let [ scholars, setScholars ] = useState([])
-    let [ nextMinSLP, setNextMinSLP ] = useState(0)
 
     const updateData = async () => {
         console.groupCollapsed(`APP - Update Data`)
         
-            let res = await fetch(`${HOST}/v2/performance-levels`, {
-                method: 'get'
-            })
+        let res = await fetch(`${HOST}/v2/performance-levels`, {
+            method: 'get'
+        })
 
-            let json = await res.json()
+        let json = await res.json()
 
-            json.performanceLevels = json.performanceLevels.sort( (a, b) => a.level - b.level)
+        json.performanceLevels = json.performanceLevels.sort( (a, b) => a.level - b.level)
 
-            console.log(`Resived performance levels: ${JSON.stringify(json.performanceLevels, null, 4)}`)
+        console.log(`Resived performance levels: ${JSON.stringify(json.performanceLevels, null, 4)}`)
+        setPerformanceLevels(json.performanceLevels)
 
-            res = await fetch(`${HOST}/v2/scholars`, {
-                method: 'get'
-            })
+        res = await fetch(`${HOST}/v2/scholars`, {
+            method: 'get'
+        })
 
-            json = await res.json()
-            
-            console.log(`the scholars are: ${JSON.stringify(json.scholars, null, 4)}`)
+        json = await res.json()
         
+        console.log(`the scholars are: ${JSON.stringify(json.scholars, null, 4)}`)
+        setScholars(json.scholars)
+
         console.groupEnd()
 
-        setPerformanceLevels(json.performanceLevels)
-        setScholars(json.scholars)
+    
+        
 
     }
 
@@ -153,7 +154,7 @@ function App() {
   return (
     <div id='main'>
         <h1>Domain: { HOST }</h1>
-        <PerformanceLevelForm onSubmit={ handleNewLevel } nextMinSLP={ nextMinSLP }/>
+        <PerformanceLevelForm onSubmit={ handleNewLevel }/>
         <PerformanceLevelsTable data= { performanceLevels } onDelete={ handleDeleteLevel }/>
 
         <ScholarForm onSubmit={ handleNewScholar }/>
