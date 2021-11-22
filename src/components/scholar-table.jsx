@@ -11,12 +11,14 @@ export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
 
 	let scholarRows = data.map( scholar => {
 		scholar.slp = (scholar.slp)? scholar.slp : {}
+		scholar.mmr = scholar.mmr || {}
 		scholar.slpToPay = (scholar.slpToPay)? scholar.slpToPay : {}
+
 		return (
 			<tr>
 				<td>{ scholar.name }</td>
 				<td>{ scholar.discord }</td>
-				<td>{ scholar.mmr }</td>
+				<td>{ scholar.mmr.total }</td>
 				<td>{ scholar.performance }</td>
 				<td>{ scholar.percent }</td>
 

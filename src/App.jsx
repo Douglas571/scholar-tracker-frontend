@@ -36,10 +36,6 @@ function App() {
         setScholars(json.scholars)
 
         console.groupEnd()
-
-    
-        
-
     }
 
     useEffect(() => {
