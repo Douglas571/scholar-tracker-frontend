@@ -12,9 +12,12 @@ function App() {
     let [ performanceLevels, setPerformanceLevels ] = useState([])
     let [ scholars, setScholars ] = useState([])
 
+    let [ sortTopDown, setSortTopDown ] = useState(false)
+    let [ sortBy, setSortBy ] = useState('')
+
     const updateData = async () => {
         console.groupCollapsed(`APP - Update Data`)
-        
+
         let res = await fetch(`${HOST}/v2/performance-levels`, {
             method: 'get'
         })
@@ -124,9 +127,6 @@ function App() {
         }
     }
 
-    let [ sortTopDown, setSortTopDown ] = useState(false)
-    let [ sortBy, setSortBy ] = useState('')
-
     const handleScholarsSort = (by) => {
         let newScholars
 
@@ -146,6 +146,47 @@ function App() {
 
     }
 
+    const handleDeleteScholar = async (ronin) => {
+        console.groupCollapsed(`APP - delete scholar`)
+        
+        console.log(`delete scholar: ${ronin}`)
+        const res = await fetch(`${HOST}/v2/scholars/${ronin}`, {
+          method: 'delete'
+        })
+        
+        updateData()
+
+        console.groupEnd()
+    }
+
+    const handleScholarMark = async (ronin) => {
+        console.groupCollapsed(`APP - Marking scholar`)
+        
+        console.log(`Markin ronin: ${ronin}`)
+        
+        console.groupEnd()
+        
+    }
+
+    const handleInvoqueServerUpdate = async () => {
+        /*
+        await fetch(`${HOST}/updt`, {
+            method: 'get'
+        })
+
+        await updateData()
+        */
+        console.groupCollapsed(`APP - invoque Server update`)
+        
+        console.log(`Updating data in server...`)
+        
+        console.groupEnd()
+        
+    }
+
+
+
+
 
   return (
     <div id='main'>
@@ -154,7 +195,14 @@ function App() {
         <PerformanceLevelsTable data= { performanceLevels } onDelete={ handleDeleteLevel }/>
 
         <ScholarForm onSubmit={ handleNewScholar }/>
-        <ScholarTable data={ scholars } onSort={ handleScholarsSort } sortTopDown={ sortTopDown } sortBy={ sortBy }/>
+        <ScholarTable data={ scholars } 
+            onSort={ handleScholarsSort } 
+            sortTopDown={ sortTopDown } 
+            sortBy={ sortBy }
+
+            onDelete={ handleDeleteScholar }
+            onMark={ handleScholarMark }
+            onUpdate={ handleInvoqueServerUpdate }/>
     </div>
   );
 }

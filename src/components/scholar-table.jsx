@@ -1,4 +1,16 @@
-export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
+export default function ScholarTable(props) {
+	const { 
+		data, 
+		onSort, 
+		sortBy, 
+		sortTopDown,
+
+		onUpdate,
+		onDelete,
+		onMark
+
+	} = props
+
 	let defaultIcon = '˄˅'
 	let selectedIcon = (sortTopDown)? '˅': '˄'
 
@@ -9,13 +21,41 @@ export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
 
 	console.groupEnd()
 
+	const handleAction = (evt) => {
+		const { target } = evt
+		const action = target.getAttribute('action')
+		const ronin = target.getAttribute('ronin')
+
+		switch(action) {
+			case 'del':
+				onDelete(ronin)
+				break
+
+			case 'mark':
+				onMark(ronin)
+				break
+
+			case 'update':
+				onUpdate()
+				break
+
+			default:
+				break
+		}
+	}
+
 	let scholarRows = data.map( scholar => {
 		scholar.slp = (scholar.slp)? scholar.slp : {}
 		scholar.mmr = scholar.mmr || {}
 		scholar.slpToPay = (scholar.slpToPay)? scholar.slpToPay : {}
 
 		return (
-			<tr>
+			<tr key={ scholar.ronin }>
+				<td>
+					<button ronin={ scholar.ronin } action="del" onClick= { handleAction }>del</button>
+					<button ronin={ scholar.ronin } action="mark" onClick={ handleAction }>listo</button>
+				</td>
+
 				<td>{ scholar.name }</td>
 				<td>{ scholar.discord }</td>
 				<td>{ scholar.mmr.total }</td>
@@ -40,11 +80,11 @@ export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
 
 	return (
 		<div>
-			<h1>Becados</h1>
+			<h1>Becados <button action="update" onClick={ handleAction }>Actualizar</button></h1>
 			<table  border="1">
 				<thead>
 					<tr>
-						<th colSpan='5'></th>
+						<th colSpan='6'></th>
 
 						<th colSpan='3'>SLP</th>
 
@@ -52,6 +92,7 @@ export default function ScholarTable({ data, onSort, sortBy, sortTopDown }) {
 						<th colSpan='2'></th>
 					</tr>
 					<tr>
+						<th></th>
 						<th>Nombre ˄˅</th>
 						<th>Discord</th>
 						<th onClick={ () => onSort('mmr') }>MMR <button>{ (sortBy === 'mmr')? selectedIcon: defaultIcon}</button></th>
