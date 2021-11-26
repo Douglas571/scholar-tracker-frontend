@@ -170,16 +170,17 @@ function App() {
 
     const handleInvoqueServerUpdate = async () => {
         /*
-        await fetch(`${HOST}/updt`, {
-            method: 'get'
-        })
-
-        await updateData()
+        
         */
         console.groupCollapsed(`APP - invoque Server update`)
         
         console.log(`Updating data in server...`)
-        
+        await fetch(`${HOST}/updt`, {
+            method: 'get'
+        })
+        console.log(`Data updated`)
+
+        updateData()
         console.groupEnd()
         
     }

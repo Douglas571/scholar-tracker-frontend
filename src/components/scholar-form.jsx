@@ -58,7 +58,8 @@ export default function ScholarForm({ onSubmit }) {
 	            	<label>Ronin: </label>
 	            	<input type="text" name="ronin"
 	            		placeholder="0x000..."
-	            		value={ newScholar.ronin } onChange={ handleChange } required/>
+	            		value={ newScholar.ronin } onChange={ handleChange } required
+	            		pattern="(?<start>((0x)|(ronin:)|()))(?<addrs>([(a-f)(0-9)]{2}){20})"/>
 				</p>
 
 				<p>
