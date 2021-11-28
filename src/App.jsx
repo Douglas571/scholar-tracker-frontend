@@ -150,7 +150,8 @@ function App() {
         console.groupCollapsed(`APP - delete scholar`)
         
         console.log(`delete scholar: ${ronin}`)
-        const res = await fetch(`${HOST}/v2/scholars/${ronin}`, {
+        
+        await fetch(`${HOST}/v2/scholars/${ronin}`, {
           method: 'delete'
         })
         
