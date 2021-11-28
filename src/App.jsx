@@ -163,6 +163,14 @@ function App() {
         console.groupCollapsed(`APP - Marking scholar`)
         
         console.log(`Markin ronin: ${ronin}`)
+
+        let res = await fetch(`${HOST}/v2/scholars/${ronin}/history`, {
+            method: 'put'
+        })
+
+        let data = await res.json()
+
+        console.log(data)
         
         console.groupEnd()
         
