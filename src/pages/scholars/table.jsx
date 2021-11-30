@@ -1,13 +1,11 @@
 export default function ScholarTable(props) {
 	const { 
-		data, 
+		scholars, 
 		onSort, 
 		sortBy, 
 		sortTopDown,
 
-		onUpdate,
-		onDelete,
-		onMark
+		onAction,
 
 	} = props
 
@@ -21,18 +19,30 @@ export default function ScholarTable(props) {
 
 	console.groupEnd()
 
-	const handleAction = (evt) => {
-		const { target } = evt
-		const action = target.getAttribute('action')
-		const ronin = target.getAttribute('ronin')
+	const handleAction = (action, payload) => {
 
 		switch(action) {
+			case 'update-server':
+				onAction({ type: 'update-server'})
+				break
+
+			case 'new':
+				onAction({ type: 'change-mode', payload: { mode: 'new'}})
+				break
+
+			case 'edit':
+				console.log(payload)
+				onAction({ 
+					type: 'change-mode', 
+					payload: { mode: 'edit', scholar: payload}})
+				break
+
 			case 'del':
-				onDelete(ronin)
+				onAction({ type: 'scholar:delete', payload })
 				break
 
 			case 'mark':
-				onMark(ronin)
+				onAction({ type: 'scholar:mark', payload })
 				break
 
 			default:
@@ -40,7 +50,7 @@ export default function ScholarTable(props) {
 		}
 	}
 
-	let scholarRows = data.map( scholar => {
+	let scholarRows = scholars.map( scholar => {
 		scholar.slp = (scholar.slp)? scholar.slp : {}
 		scholar.mmr = scholar.mmr || {}
 		scholar.slpToPay = (scholar.slpToPay)? scholar.slpToPay : {}
@@ -48,8 +58,9 @@ export default function ScholarTable(props) {
 		return (
 			<tr key={ scholar.ronin }>
 				<td>
-					<button ronin={ scholar.ronin } action="del" onClick= { handleAction }>del</button>
-					<button ronin={ scholar.ronin } action="mark" onClick={ handleAction }>listo</button>
+					<button onClick= { () => handleAction('edit', scholar.ronin) }>edit</button>
+					<button onClick= { () => handleAction('del', scholar.ronin) }>del</button>
+					<button onClick={ () => handleAction('mark', scholar.ronin) }>listo</button>
 				</td>
 
 				<td>{ scholar.name }</td>
@@ -76,6 +87,10 @@ export default function ScholarTable(props) {
 
 	return (
 		<div>
+			<h1>Becados</h1>
+			<button onClick={() => handleAction('new')}>Nuevo becado</button>
+			<button onClick={() => handleAction('update-server')}>Actualizar Servidor</button>
+
 			<table  border="1">
 				<thead>
 					<tr>
@@ -90,13 +105,11 @@ export default function ScholarTable(props) {
 						<th></th>
 						<th>Nombre ˄˅</th>
 						<th>Discord</th>
-						<th onClick={ () => onSort('mmr') }>MMR <button>{ (sortBy === 'mmr')? selectedIcon: defaultIcon}</button></th>
+						<th>MMR</th>
 						<th>Nivel ˄˅</th>
-						<th onClick={ () => onSort('percent') }>% <button>{ (sortBy === 'percent')? selectedIcon: defaultIcon}</button></th>
+						<th>%</th>
 
-						<th onClick={ () => onSort('slp') }>
-							Hoy<button>{ (sortBy === 'slp')? selectedIcon: defaultIcon}</button>
-						</th>
+						<th>Hoy</th>
 						<th>Total</th>
 						<th>Pago acumulado</th>
 
