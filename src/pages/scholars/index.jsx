@@ -72,6 +72,24 @@ const API = {
 		return json
 	},
 
+	editScholar: async (scholar) => {
+		console.group(`API - editScholar()`)
+		
+		const res = await fetch(`${HOST}/v2/scholars/${scholar.ronin}`,
+		{
+			method: 'put',
+            headers: {
+                'Content-Type': 'Application/json'
+            },
+            body: JSON.stringify({ scholar })
+		})
+
+		const json = await res.json()
+		console.log(json)
+		console.groupEnd()
+		return json
+	},
+
 	markScholar: async (ronin) => {
 		console.groupCollapsed(`API - markScholar()`)
         
@@ -159,6 +177,15 @@ export default function Scholars({}) {
 		}
 	}, [state.update])
 
+	useEffect(() => {
+		const scholar = state.editScholar
+		if(scholar) {
+			console.log(`editing: ${scholar.ronin}`)
+			API.editScholar(scholar)
+				.then( _ => updateScholars())
+		}
+	}, [state.editScholar])
+
 	let view
 	console.log('mode: ', state.mode)
 	switch(state.mode) {
@@ -232,7 +259,7 @@ const reducer = (state, action) => {
 			console.log(`edit scholar ${JSON.stringify(payload, null, 4)}`)
 			newState = {
 				...state,
-				mode: 'table'
+				mode: 'table',
 			}
 
 			if(payload){

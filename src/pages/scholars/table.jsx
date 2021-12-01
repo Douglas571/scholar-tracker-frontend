@@ -38,7 +38,9 @@ export default function ScholarTable(props) {
 				break
 
 			case 'del':
-				onAction({ type: 'scholar:delete', payload })
+				if(window.confirm("¿Eliminar Becado?")) {
+					onAction({ type: 'scholar:delete', payload })
+				}
 				break
 
 			case 'mark':
@@ -59,8 +61,8 @@ export default function ScholarTable(props) {
 			<tr key={ scholar.ronin }>
 				<td>
 					<button onClick= { () => handleAction('edit', scholar) }>edit</button>
-					<button onClick= { () => handleAction('del', scholar.ronin) }>del</button>
-					<button onClick={ () => handleAction('mark', scholar.ronin) }>listo</button>
+					<button onClick= { () => handleAction('del', scholar.ronin) }>elm</button>
+					<button onClick={ () => handleAction('mark', scholar.ronin) }>marcar</button>
 				</td>
 
 				<td>{ scholar.name }</td>
@@ -88,8 +90,8 @@ export default function ScholarTable(props) {
 	return (
 		<div>
 			<h1>Becados</h1>
-			<button onClick={() => handleAction('new')}>Nuevo becado</button>
 			<button onClick={() => handleAction('update-server')}>Actualizar Servidor</button>
+			<button onClick={() => handleAction('new')}>Nuevo becado</button>
 
 			<table  border="1">
 				<thead>

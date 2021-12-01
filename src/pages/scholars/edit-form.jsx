@@ -96,7 +96,7 @@ export default function EditForm({ scholar, onAction }) {
 			            		value={ newScholar.discord } onChange={ handleChange }/>
 						</p>
 						
-						<button type="submit">Agregar</button>
+						<button type="submit">Editar</button>
 						<button onClick={ () => handleAction('cancel') }>Cancelar</button>
 					</form>
 				</div>
