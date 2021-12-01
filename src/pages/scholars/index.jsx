@@ -8,43 +8,156 @@ import ScholarsTable from './table'
 
 import Button from '../../components/button'
 
-export default function Scholars({}) {
-	let [ scholars, setScholars ] = useState([
-		{ name: 'douglas', ronin: '0x000' },
-	])
+const HOST = process.env.REACT_APP_D
 
-	// posible mode: view, new, edit
+const API = {
+	updateServer: async () => {
+		console.group(`API - updateServer()`)
+		
+        await fetch(`${HOST}/updt`, {
+            method: 'get'
+        })
+        console.log(`Data updated`)
+		
+		console.groupEnd()
+		
+	},
+
+	getScholars: async () => {
+		console.group(`API - getScholars()`)
+		
+		const res = await fetch(`${HOST}/v2/scholars`, {
+            method: 'get'
+        })
+
+        const json = await res.json()
+        
+        console.log(`the scholars are: ${JSON.stringify(json.scholars, null, 4)}`)
+		
+		console.groupEnd()
+		return json.scholars
+		
+	},
+
+	addScholar: async (scholar) => {
+		console.group(`API - addScholar()`)
+		
+		const res = await fetch(`${HOST}/v2/scholars`, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'Application/json'
+            },
+            body: JSON.stringify({ scholar })
+        })
+
+        const json = await res.json()
+
+        console.log(json)
+		
+		console.groupEnd()
+		
+	},
+
+	deleteScholar: async (ronin) => {
+		console.group(`API - deleteScholar()`)
+		
+        let res = await fetch(`${HOST}/v2/scholars/${ronin}`, {
+            method: 'delete'
+        })
+
+        let json = await res.json()
+        console.log('response: ', json)
+        
+        console.groupEnd()
+		return json
+	},
+
+	markScholar: async (ronin) => {
+		console.groupCollapsed(`API - markScholar()`)
+        
+        console.log(`Markin ronin: ${ronin}`)
+
+        let res = await fetch(`${HOST}/v2/scholars/${ronin}/history`, {
+            method: 'put'
+        })
+
+        let data = await res.json()
+
+        console.log(data)
+        
+        console.groupEnd()
+	}
+}
+
+export default function Scholars({}) {
+	// posible mode: table, new, edit
 	const [ state, dispatch ] = useReducer(reducer, 
 		{ 
 			mode: 'table',
+			newScholar: null,
+			editScholar: null,
 			delete: null,
 			mark: null,
+			update: null,
  
-			scholars: [
-				{ name: 'douglas', ronin: '0x0001' },
-			],
-
-			newScholar: null
+			scholars: [],
 		}
 	)
 
+	const updateScholars = async () => {
+		const scholars = await API.getScholars()
+		dispatch({ 
+			type: 'scholars', 
+			payload: scholars
+		})
+	}
+
+	// First change
 	useEffect(() => {
-		console.log(`delete ronin: ${state.delete}`)
-		setScholars(scholars.filter( sh => sh.ronin !== state.delete))
+		API.getScholars()
+			.then( scholars => {
+				dispatch({ 
+					type: 'scholars', 
+					payload: scholars
+				})
+			})
+	}, [])
+
+	useEffect(() => {
+		const ronin = state.delete
+		if(ronin) {
+			console.log(`delete ronin: ${state.delete}`)
+			API.deleteScholar(ronin)
+			.then( _ => updateScholars() )
+		}
 	}, [state.delete])
 
 	useEffect(() => {
-		console.log(`marking ronin: ${state.mark}`)
+		
+		const ronin = state.mark
+		if(ronin) {
+			console.log(`marking: ${ronin}`)
+			API.markScholar(ronin)
+				.then( _ => updateScholars() )
+		}
 	}, [state.mark])
 
 	useEffect(() => {
-		if(state.newScholar) {
-			console.log('set new scholar')
-			dispatch({ type: 'scholars:add' })	
+		let { newScholar } = state
+		if(newScholar) {
+			console.log('upload new scholar: ', JSON.stringify(newScholar, null, 4))
+			API.addScholar(newScholar)
+				.then( _ => updateScholars() )
 		}
-
-
 	}, [state.newScholar])
+
+	useEffect(() => {
+		if(state.update){
+			console.log('updating server')
+			API.updateServer()
+			.then( _ => updateScholars() )
+		}
+	}, [state.update])
 
 	let view
 	console.log('mode: ', state.mode)
@@ -84,26 +197,8 @@ export default function Scholars({}) {
 
 const reducer = (state, action) => {
 	let newState = {}
-	switch(action.type){
-		case 'edit:start':
-			console.log(action)
-			return {
-				...state,
-				mode: 'edit',
-
-				currentEditing: state.scholars.find( sh => sh.ronin === action.payload)
-			}
-			break
-
-		case 'edit:end':
-			console.log('edit')
-			return {
-				...state,
-				mode: 'table'
-			}
-			break	
-
-		//---------------
+	const { type, payload } = action
+	switch(type){
 		case 'change-mode':
 			newState = {
 				...state,
@@ -125,8 +220,25 @@ const reducer = (state, action) => {
 				mode: 'table'
 			}
 
-			if(action.payload)
-				newState.scholars = state.scholars.concat(action.payload)
+			if(payload){
+				//newState.scholars = state.scholars.concat(action.payload)
+				newState.newScholar = payload
+			}
+
+			return newState
+			break
+
+		case 'scholar:edit':
+			console.log(`edit scholar ${JSON.stringify(payload, null, 4)}`)
+			newState = {
+				...state,
+				mode: 'table'
+			}
+
+			if(payload){
+				//newState.scholars = state.scholars.concat(action.payload)
+				newState.editScholar = payload
+			}
 
 			return newState
 			break
@@ -134,7 +246,7 @@ const reducer = (state, action) => {
 		case 'scholar:delete':
 			return {
 				...state,
-				scholars: state.scholars.filter( sh => sh.ronin !== action.payload)
+				delete: payload
 			}
 			break
 
@@ -146,11 +258,20 @@ const reducer = (state, action) => {
 			break
 
 		//------------------
+
+		case 'scholars':
+			console.log(`the scholars are: ${JSON.stringify(payload, null, 4)}`)
+			return {
+				...state,
+				scholars: payload
+			}
+			break
+
 		case 'update-server':
 			console.log('update server')
 			return {
 				...state,
-				mode: 'table'
+				update: Date.now()
 			}
 			break		
 

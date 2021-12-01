@@ -58,7 +58,7 @@ export default function ScholarTable(props) {
 		return (
 			<tr key={ scholar.ronin }>
 				<td>
-					<button onClick= { () => handleAction('edit', scholar.ronin) }>edit</button>
+					<button onClick= { () => handleAction('edit', scholar) }>edit</button>
 					<button onClick= { () => handleAction('del', scholar.ronin) }>del</button>
 					<button onClick={ () => handleAction('mark', scholar.ronin) }>listo</button>
 				</td>
