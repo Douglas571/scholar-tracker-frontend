@@ -14,13 +14,15 @@ const API = {
 	updateServer: async () => {
 		console.group(`API - updateServer()`)
 		
-        await fetch(`${HOST}/updt`, {
+        const res = await fetch(`${HOST}/updt`, {
             method: 'get'
         })
+        const json = await res.json()
         console.log(`Data updated`)
+        console.log(json)
 		
 		console.groupEnd()
-		
+		return json
 	},
 
 	getScholars: async () => {
@@ -173,7 +175,10 @@ export default function Scholars({}) {
 		if(state.update){
 			console.log('updating server')
 			API.updateServer()
-			.then( _ => updateScholars() )
+			.then( res => {
+				console.log(res)
+				updateScholars()
+			})
 		}
 	}, [state.update])
 

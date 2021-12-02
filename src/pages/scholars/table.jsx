@@ -38,7 +38,7 @@ export default function ScholarTable(props) {
 				break
 
 			case 'del':
-				if(window.confirm("¿Eliminar Becado?")) {
+				if(!window.confirm("¿Abortar eliminación?")) {
 					onAction({ type: 'scholar:delete', payload })
 				}
 				break
