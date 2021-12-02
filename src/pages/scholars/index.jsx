@@ -198,7 +198,9 @@ export default function Scholars({}) {
 			view = (
 				<ScholarsTable
 					scholars={ state.scholars }
-					onAction={ dispatch }/>)
+					onAction={ dispatch }
+
+					currentScholarMark={state.currentScholarMark}/>)
 			break
 
 		case 'new':
@@ -231,6 +233,15 @@ const reducer = (state, action) => {
 	let newState = {}
 	const { type, payload } = action
 	switch(type){
+		case 'cancel':
+			console.log(`canceled action, return to table`)
+			return {
+				...state,
+				mode: 'table'
+			}
+			break
+		
+		
 		case 'change-mode':
 			newState = {
 				...state,
@@ -282,11 +293,27 @@ const reducer = (state, action) => {
 			}
 			break
 
-		case 'scholar:mark':
-			return {
+		case 'scholar:mark:start':
+			console.log('starting mark')
+			newState = {
 				...state,
-				mark: action.payload
+				currentScholarMark: payload
 			}
+
+			return newState
+			break
+		
+		
+
+		case 'scholar:mark':
+			console.log(`scholar:mark - the payload is: ${JSON.stringify(payload, null, 4)}`)
+			/*
+				return {
+					...state,
+					mark: 
+				}
+			*/
+			return state
 			break
 
 		//------------------
@@ -308,7 +335,7 @@ const reducer = (state, action) => {
 			break		
 
 		default:
-			throw new Error('Unknow actions')
+			throw new Error('Unknow actions: ', type)
 			break
 	}
 }

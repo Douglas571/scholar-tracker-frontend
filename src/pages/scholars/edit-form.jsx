@@ -97,7 +97,7 @@ export default function EditForm({ scholar, onAction }) {
 						</p>
 						
 						<button type="submit">Editar</button>
-						<button onClick={ () => handleAction('cancel') }>Cancelar</button>
+						<button onClick={ () => onAction({ type: 'cancel' })}>Cancelar</button>
 					</form>
 				</div>
 			</>
